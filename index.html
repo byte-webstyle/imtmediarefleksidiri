@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IMT Refleksi Diri & Pembelajaran Mendalam PJOK</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .smooth-transition {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #areaCetakRapor, #areaCetakRapor * {
+        visibility: visible;
+      }
+      #areaCetakRapor {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
+
+  <!-- TOAST NOTIFIKASI -->
+  <div id="toastNotif" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 smooth-transition bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 text-sm font-medium no-print pointer-events-none">
+    <span id="toastIcon">✅</span>
+    <span id="toastPesan">Data berhasil disimpan!</span>
+  </div>
+
+  <!-- HEADER UTAMA -->
+  <header class="bg-gradient-to-r from-blue-950 via-blue-900 to-indigo-900 text-white shadow-lg no-print">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div class="flex items-center gap-4">
+        <!-- FOTO PROFIL (Siap Diubah) -->
+        <div class="bg-blue-800/60 p-1 rounded-2xl border border-blue-700 shadow-inner shrink-0 overflow-hidden w-14 h-14 flex items-center justify-center">
+          <img 
+            src="foto1.png" 
+            alt="Foto Profil"
+            class="w-full h-full object-cover rounded-xl"
+          >
+        </div>
+        <div>
+          <span class="bg-amber-400 text-slate-900 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full tracking-wider">PEMBELAJARAN MENDALAM PJOK</span>
+          <h1 class="text-xl md:text-2xl font-bold tracking-tight mt-0.5">IMT Media Refleksi Diri & Literasi Kesehatan</h1>
+          <p class="text-blue-200 text-xs md:text-sm">Menumbuhkan Kesadaran Pola Hidup Sehat Berbasis Budaya & Kebiasaan</p>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2.5 w-full sm:w-auto border-t sm:border-0 border-blue-800/40 pt-2 sm:pt-0">
+        <div class="bg-blue-800/80 px-3 py-1.5 rounded-xl border border-blue-700 text-right">
+          <span class="text-[10px] text-blue-200 block uppercase font-bold">Total Skor Quest</span>
+          <span id="skorQuestTotal" class="text-lg font-extrabold text-amber-400">0 / 100 XP</span>
+        </div>
+        <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white px-3.5 py-2 rounded-xl text-xs font-semibold smooth-transition shadow flex items-center gap-1.5">
+          🖨️ Cetak / PDF
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- KONTEN UTAMA -->
+  <main class="max-w-7xl w-full mx-auto px-4 md:px-6 py-6 space-y-6 flex-grow">
+
+    <!-- STATISTIK RINGKAS -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4 no-print">
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center gap-3">
+        <div class="bg-blue-100 text-blue-700 p-3 rounded-xl text-xl">🧮</div>
+        <div>
+          <p class="text-xs text-slate-500 font-medium">Status IMT</p>
+          <p id="statImtTeks" class="text-base md:text-lg font-bold text-slate-800">Belum dihitung</p>
+        </div>
+      </div>
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center gap-3">
+        <div class="bg-emerald-100 text-emerald-700 p-3 rounded-xl text-xl">🏆</div>
+        <div>
+          <p class="text-xs text-slate-500 font-medium">Level Refleksi</p>
+          <p id="statLevelRefleksi" class="text-base md:text-lg font-bold text-emerald-700">Pemula</p>
+        </div>
+      </div>
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center gap-3">
+        <div class="bg-amber-100 text-amber-700 p-3 rounded-xl text-xl">🌏</div>
+        <div>
+          <p class="text-xs text-slate-500 font-medium">Quest CRT</p>
+          <p id="statCrtProgress" class="text-base md:text-lg font-bold text-amber-700">0 / 3 Selesai</p>
+        </div>
+      </div>
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center gap-3">
+        <div class="bg-purple-100 text-purple-700 p-3 rounded-xl text-xl">🎯</div>
+        <div>
+          <p class="text-xs text-slate-500 font-medium">Target Sehat</p>
+          <p id="statTargetAktif" class="text-base md:text-lg font-bold text-purple-700">0 Kebiasaan</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB TAHAPAN DEEP LEARNING -->
+    <section class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 no-print">
+      <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Tahapan Pembelajaran Mendalam (Deep Learning)</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <button onclick="bukaTahap('memahami')" id="tab-memahami" class="tab-btn p-3 rounded-xl border text-left font-semibold text-xs transition flex items-center gap-2 bg-blue-900 text-white border-blue-900">
+          <span class="w-6 h-6 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs">1</span>
+          1. Memahami IMT
+        </button>
+        <button onclick="bukaTahap('mengaitkan')" id="tab-mengaitkan" class="tab-btn p-3 rounded-xl border text-left font-semibold text-xs transition flex items-center gap-2 bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100">
+          <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs">2</span>
+          2. CRT Quest (Budaya)
+        </button>
+        <button onclick="bukaTahap('merefleksi')" id="tab-merefleksi" class="tab-btn p-3 rounded-xl border text-left font-semibold text-xs transition flex items-center gap-2 bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100">
+          <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs">3</span>
+          3. Refleksi Diri
+        </button>
+        <button onclick="bukaTahap('menerapkan')" id="tab-menerapkan" class="tab-btn p-3 rounded-xl border text-left font-semibold text-xs transition flex items-center gap-2 bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100">
+          <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs">4</span>
+          4. Target Aksi Sehat
+        </button>
+      </div>
+    </section>
+
+    <!-- TAHAP 1: MEMAHAMI (KALKULATOR) -->
+    <section id="sec-memahami" class="tahap-konten grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="lg:col-span-5 bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+        <div class="border-b pb-2">
+          <h3 class="text-base font-bold text-blue-900">🧮 Hitung Indeks Massa Tubuh (IMT)</h3>
+          <p class="text-xs text-slate-500">Langkah awal memahami kondisi fisik pribadi.</p>
+        </div>
+
+        <form id="formImt" onsubmit="hitungImtLengkap(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Nama Peserta Didik</label>
+            <input type="text" id="namaSiswa" required placeholder="Contoh: Budi Pratama" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-600 outline-none">
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Kelas</label>
+              <input type="text" id="kelasSiswa" required placeholder="X-PJOK 1" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-600 outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Jenis Kelamin</label>
+              <select id="jkSiswa" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-600 outline-none">
+                <option value="L">Laki-laki</option>
+                <option value="P">Perempuan</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
+            <div>
+              <label class="block text-xs text-slate-600 mb-1">Tinggi Badan (cm)</label>
+              <input type="number" step="0.1" id="tbSiswa" required placeholder="165" class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs text-slate-600 mb-1">Berat Badan (kg)</label>
+              <input type="number" step="0.1" id="bbSiswa" required placeholder="55" class="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-sm">
+            </div>
+          </div>
+          <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-semibold py-2.5 rounded-lg text-sm transition shadow">
+            📊 Hitung & Lanjut ke Refleksi (+25 XP)
+          </button>
+        </form>
+      </div>
+
+      <div class="lg:col-span-7 bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between space-y-4">
+        <div>
+          <h3 class="text-base font-bold text-slate-800 mb-2">📚 Konsep Pembelajaran Mendalam: IMT sebagai Cermin Kesadaran</h3>
+          <p class="text-xs text-slate-600 leading-relaxed mb-3">
+            Indeks Massa Tubuh (IMT) bukan sekadar angka atau penilaian fisik semata, melainkan instrumen **refleksi diri** untuk memahami bagaimana pola makan, aktivitas fisik, dan kebiasaan harian mempengaruhi kesejahteraan jasmani peserta didik.
+          </p>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+            <div class="bg-blue-50 p-2.5 rounded-lg border border-blue-200">
+              <span class="block font-bold text-blue-900">&lt; 18.5</span>
+              <span class="text-[11px] text-blue-700">Kurus (Gizi Kurang)</span>
+            </div>
+            <div class="bg-emerald-50 p-2.5 rounded-lg border border-emerald-200">
+              <span class="block font-bold text-emerald-900">18.5 - 25.0</span>
+              <span class="text-[11px] text-emerald-700">Ideal (Normal)</span>
+            </div>
+            <div class="bg-amber-50 p-2.5 rounded-lg border border-amber-200">
+              <span class="block font-bold text-amber-900">25.1 - 27.0</span>
+              <span class="text-[11px] text-amber-700">Gemuk (Kelebihan)</span>
+            </div>
+            <div class="bg-red-50 p-2.5 rounded-lg border border-red-200">
+              <span class="block font-bold text-red-900">&gt; 27.0</span>
+              <span class="text-[11px] text-red-700">Obesitas</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="hasilKalkulatorBox" class="bg-slate-50 border border-slate-200 p-4 rounded-xl text-xs text-slate-600">
+          💡 <em>Isi form di samping untuk menampilkan analisa IMT serta saran literasi kesehatan awal.</em>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAHAP 2: MENGAITKAN (CRT QUEST - PILIHAN GANDA) -->
+    <section id="sec-mengaitkan" class="tahap-konten hidden space-y-4">
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+        <div class="border-b pb-3 mb-4">
+          <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">Culturally Responsive Teaching (CRT)</span>
+          <h3 class="text-base font-bold text-slate-800 mt-1">🌏 Mengaitkan IMT dengan Budaya Makan & Pola Hidup Sekitar</h3>
+          <p class="text-xs text-slate-500">Pilihlah jawaban yang paling menggambarkan kebiasaan harian di lingkungan keluarga dan daerahmu.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Quest CRT 1 (Pilihan Ganda) -->
+          <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 hover:bg-white transition space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-bold text-blue-900">Quest 1: Pola Makan Lokal</span>
+              <span class="text-[10px] bg-amber-200 text-amber-900 px-2 py-0.5 rounded font-bold">+10 XP</span>
+            </div>
+            <p class="text-xs text-slate-600">Bagaimana proporsi hidangan karbohidrat vs sayur/protein dalam menu makan harian keluargamu?</p>
+            <div class="space-y-1.5 text-xs">
+              <label class="flex items-center gap-2 p-2 bg-white rounded border border-slate-200 cursor-pointer hover:bg-amber-50">
+                <input type="radio" name="crt1_opt" value="Dominan karbohidrat tinggi (nasi porsi besar, gorengan, jarang sayur)">
+                <span>A. Dominan karbohidrat (nasi porsi besar & gorengan)</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 bg-white rounded border border-slate-200 cursor-pointer hover:bg-amber-50">
+                <input type="radio" name="crt1_opt" value="Cukup seimbang, ada nasi, lauk pauk, dan sayuran setiap hari">
+                <span>B. Cukup seimbang (ada nasi, lauk, dan sayur)</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 bg-white rounded border border-slate-200 cursor-pointer hover:bg-amber-50">
+                <input type="radio" name="crt1_opt" value="Sangat memperhatikan gizi seimbang dan membatasi makanan berminyak">
+                <span>C. Sangat gizi seimbang & rendah minyak</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Quest CRT 2 (Pilihan Ganda) -->
+          <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 hover:bg-white transition space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-bold text-blue-900">Quest 2: Kebiasaan Gerak</span>
+              <span class="text-[10px] bg-amber-200 text-amber-900 px-2 py-0.5 rounded font-bold">+10 XP</span>
+            </div>
+            <p class="text-xs text-slate-600">Bagaimana intensitas kebiasaan gerak / aktivitas fisik lokal di lingkungan sekitarmu?</p>
+            <div class="space-y-1.5 text-xs">
+              <label class="flex items-center gap-2 p-2 bg-white rounded border border-slate-200 cursor-pointer hover:bg-amber-50">
+                <input type="radio" name="crt2_opt" value="Sangat minim gerak (ke mana-mana naik motor & lebih banyak duduk)">
+                <span>A. Minim gerak (selalu berkendara & banyak duduk)</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 bg-white rounded border border-slate-200 cursor-pointer hover:bg-amber-50">
+                <input type="radio" name="crt2_opt" value="Kadang-kadang aktivitas fisik (jalan kaki santai atau olahraga sesekali)">
+                <span>B. Kadang beraktivitas (jalan kaki/olahraga sesekali)</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 bg-white rounded border border-slate-200 cursor-pointer hover:bg-amber-50">
+                <input type="radio" name="crt2_opt" value="Sangat aktif (rutin jalan kaki, olahraga warga, atau kerja bakti)">
+                <span>C. Sangat aktif (rutin jalan kaki/olahraga warga)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Quest CRT 3 (Pilihan Ganda) -->
+          <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 hover:bg-white transition space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-bold text-blue-900">Quest 3: Konsumsi Minuman</span>
+              <span class="text-[10px] bg-amber-200 text-amber-900 px-2 py-0.5 rounded font-bold">+10 XP</span>
+            </div>
+            <p class="text-xs text-slate-600">Seberapa sering kamu mengonsumsi minuman manis kemasan / es lokal dibanding air putih?</p>
+            <div class="space-y-1.5 text-xs">
+              <label class="flex items-center gap-2 p-2 bg-white rounded border border-slate-200 cursor-pointer hover:bg-amber-50">
+                <input type="radio" name="crt3_opt" value="Sangat sering (hampir setiap hari minum teh manis/kemasan/boba)">
+                <span>A. Sangat sering (hampir setiap hari)</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 bg-white rounded border border-slate-200 cursor-pointer hover:bg-amber-50">
+                <input type="radio" name="crt3_opt" value="Cukup jarang (hanya 2-3 kali dalam seminggu)">
+                <span>B. Cukup jarang (2-3 kali seminggu)</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 bg-white rounded border border-slate-200 cursor-pointer hover:bg-amber-50">
+                <input type="radio" name="crt3_opt" value="Jarang sekali (hampir selalu mengonsumsi air putih hangat/dingin)">
+                <span>C. Jarang sekali (hampir selalu air putih)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="simpanCrtQuest()" class="mt-4 bg-amber-600 hover:bg-amber-500 text-white font-semibold px-5 py-2 rounded-lg text-xs transition shadow">
+          💾 Simpan Quest Budaya & Lanjut Refleksi
+        </button>
+      </div>
+    </section>
+
+    <!-- TAHAP 3: MEREFLEKSI (REFLEKSI DIRI - PILIHAN GANDA) -->
+    <section id="sec-merefleksi" class="tahap-konten hidden space-y-4">
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+        <div class="border-b pb-3">
+          <span class="bg-purple-100 text-purple-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">Refleksi Diri PJOK</span>
+          <h3 class="text-base font-bold text-slate-800 mt-1">📝 Lembar Refleksi Pembelajaran Mendalam</h3>
+          <p class="text-xs text-slate-500">Pilihlah pernyataan refleksi yang paling sesuai dengan evaluasi kesadaran dirimu saat ini.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Refleksi 1 (Pilihan Ganda) -->
+          <div class="border border-slate-200 p-4 rounded-xl bg-slate-50 space-y-2">
+            <label class="block text-xs font-bold text-slate-700 mb-1">1. Perasaanmu setelah mengetahui kategori IMT milikmu?</label>
+            <div class="space-y-1.5 text-xs">
+              <label class="flex items-center gap-2 p-2 bg-white rounded border cursor-pointer hover:bg-purple-50">
+                <input type="radio" name="ref1_opt" value="Kaget/Khawatir dan sadar perlu segera memperbaiki pola hidup">
+                <span>A. Khawatir & sadar harus perbaiki pola hidup</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 bg-white rounded border cursor-pointer hover:bg-purple-50">
+                <input type="radio" name="ref1_opt" value="Bersyukur/Senang karena IMT sudah ideal dan perlu dipertahankan">
+                <span>B. Bersyukur & termotivasi mempertahankan</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 bg-white rounded border cursor-pointer hover:bg-purple-50">
+                <input type="radio" name="ref1_opt" value="Biasa saja, tetapi ingin belajar lebih banyak tentang kesehatan fisik">
+                <span>C. Biar begitu, ingin belajar lebih lanjut</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Refleksi 2 (Pilihan Ganda) -->
+          <div class="border border-slate-200 p-4 rounded-xl bg-slate-50 space-y-2">
+            <label class="block text-xs font-bold text-slate-700 mb-1">2. Faktor kebiasaan utama yang paling mempengaruhi IMT mu?</label>
+            <div class="space-y-1.5 text-xs">
+              <label class="flex items-center gap-2 p-2 bg-white rounded border cursor-pointer hover:bg-purple-50">
+                <input type="radio" name="ref2_opt" value="Kurang aktivitas fisik/jarang olahraga dan terlalu banyak duduk">
+                <span>A. Jarang olahraga & terlalu banyak duduk</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 bg-white rounded border cursor-pointer hover:bg-purple-50">
+                <input type="radio" name="ref2_opt" value="Sering ngemil makanan berlemak/manis & jadwal makan tidak teratur">
+                <span>B. Sering ngemil & jam makan tidak teratur</span>
+              </label>
+              <label class="flex items-center gap-2 p-2 bg-white rounded border cursor-pointer hover:bg-purple-50">
+                <input type="radio" name="ref2_opt" value="Kurang tidur/istirahat dan tingkat stres harian cukup tinggi">
+                <span>C. Kurang tidur & waktu istirahat minim</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Refleksi 3 (Pilihan Ganda) -->
+        <div class="border border-slate-200 p-4 rounded-xl bg-slate-50 space-y-2">
+          <label class="block text-xs font-bold text-slate-700 mb-1">3. Apa pemahamanmu tentang dampak jangka panjang jika tidak menjaga pola hidup sehat?</label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+            <label class="flex items-center gap-2 p-2 bg-white rounded border cursor-pointer hover:bg-purple-50">
+              <input type="radio" name="ref3_opt" value="Bisa memicu penyakit tidak menular (diabetes, hipertensi, obesitas)">
+              <span>A. Memicu penyakit tidak menular kronis</span>
+            </label>
+            <label class="flex items-center gap-2 p-2 bg-white rounded border cursor-pointer hover:bg-purple-50">
+              <input type="radio" name="ref3_opt" value="Tubuh cepat lelah, mudah sakit, dan prestasi belajar menurun">
+              <span>B. Tubuh cepat lelah & stamina menurun</span>
+            </label>
+            <label class="flex items-center gap-2 p-2 bg-white rounded border cursor-pointer hover:bg-purple-50">
+              <input type="radio" name="ref3_opt" value="Penurunan kualitas hidup dan produktivitas di masa depan">
+              <span>C. Menurunkan kualitas hidup masa depan</span>
+            </label>
+          </div>
+        </div>
+
+        <button onclick="simpanRefleksi()" class="bg-purple-700 hover:bg-purple-600 text-white font-semibold px-5 py-2 rounded-lg text-xs transition shadow">
+          🧠 Simpan Hasil Refleksi (+25 XP)
+        </button>
+      </div>
+    </section>
+
+    <!-- TAHAP 4: MENERAPKAN (TARGET KEBIASAAN SEHAT MINGGUAN) -->
+    <section id="sec-menerapkan" class="tahap-konten hidden space-y-4">
+      <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+        <div class="border-b pb-3">
+          <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">Aksi Nyata Peserta Didik</span>
+          <h3 class="text-base font-bold text-slate-800 mt-1">🎯 Rencana Kebiasaan Sehat Mingguan</h3>
+          <p class="text-xs text-slate-500">Pilih komitmen kebiasaan konkret yang akan kamu jalankan selama 7 hari ke depan.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+          <label class="border p-3 rounded-xl flex items-start gap-2.5 cursor-pointer hover:bg-slate-50">
+            <input type="checkbox" id="tgt1" class="mt-0.5 text-blue-600 rounded">
+            <div>
+              <span class="block text-xs font-bold text-slate-800">💧 Hidrasi Sehat</span>
+              <span class="text-[11px] text-slate-500">Minum air putih minimal 2 Liter (8 gelas) sehari.</span>
+            </div>
+          </label>
+          <label class="border p-3 rounded-xl flex items-start gap-2.5 cursor-pointer hover:bg-slate-50">
+            <input type="checkbox" id="tgt2" class="mt-0.5 text-blue-600 rounded">
+            <div>
+              <span class="block text-xs font-bold text-slate-800">🏃‍♂️ Aktivitas Fisik</span>
+              <span class="text-[11px] text-slate-500">Jalan kaki / olahraga sedang minimal 30 menit per hari.</span>
+            </div>
+          </label>
+          <label class="border p-3 rounded-xl flex items-start gap-2.5 cursor-pointer hover:bg-slate-50">
+            <input type="checkbox" id="tgt3" class="mt-0.5 text-blue-600 rounded">
+            <div>
+              <span class="block text-xs font-bold text-slate-800">🥗 Piring Sehat</span>
+              <span class="text-[11px] text-slate-500">Kurangi gorengan & tambahkan 1 porsi sayur tiap makan.</span>
+            </div>
+          </label>
+          <label class="border p-3 rounded-xl flex items-start gap-2.5 cursor-pointer hover:bg-slate-50">
+            <input type="checkbox" id="tgt4" class="mt-0.5 text-blue-600 rounded">
+            <div>
+              <span class="block text-xs font-bold text-slate-800">😴 Istirahat Cukup</span>
+              <span class="text-[11px] text-slate-500">Tidur teratur 7-8 jam per malam (bebas HP sebelum tidur).</span>
+            </div>
+          </label>
+          <label class="border p-3 rounded-xl flex items-start gap-2.5 cursor-pointer hover:bg-slate-50">
+            <input type="checkbox" id="tgt5" class="mt-0.5 text-blue-600 rounded">
+            <div>
+              <span class="block text-xs font-bold text-slate-800">🚫 Batasi Minuman Manis</span>
+              <span class="text-[11px] text-slate-500">Maksimal 1 kali seminggu konsumsi kemasan manis/boba.</span>
+            </div>
+          </label>
+        </div>
+
+        <button onclick="simpanTargetSehat()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-semibold px-5 py-2 rounded-lg text-xs transition shadow">
+          🚀 Simpan Target Aksi & Tampilkan Rapor (+20 XP)
+        </button>
+      </div>
+    </section>
+
+    <!-- AREA RAPOR REFLEKSI (SIAP CETAK) -->
+    <section id="areaCetakRapor" class="bg-white p-8 rounded-xl shadow-sm border-2 border-blue-900 space-y-6">
+      <div class="flex justify-between items-center border-b-2 border-blue-900 pb-4">
+        <div>
+          <h2 class="text-xl font-extrabold text-blue-900 uppercase">Rapor Refleksi IMT & Literasi Kesehatan PJOK</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Instrumen Asesmen Pembelajaran Mendalam • Berbasis Kebiasaan & Budaya</p>
+        </div>
+        <div class="text-right">
+          <span class="text-xs text-slate-400 block">Tanggal Asesmen</span>
+          <span id="raporTanggal" class="text-xs font-bold text-slate-700">-</span>
+        </div>
+      </div>
+
+      <!-- Identitas Siswa -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200 text-xs">
+        <div>
+          <span class="text-slate-400 block">Nama Siswa</span>
+          <span id="rapNama" class="font-bold text-slate-800 text-sm">-</span>
+        </div>
+        <div>
+          <span class="text-slate-400 block">Kelas / Gender</span>
+          <span id="rapKelasJk" class="font-bold text-slate-800 text-sm">-</span>
+        </div>
+        <div>
+          <span class="text-slate-400 block">TB / BB</span>
+          <span id="rapTbBb" class="font-bold text-slate-800 text-sm">-</span>
+        </div>
+        <div>
+          <span class="text-slate-400 block">Skor IMT & Kategori</span>
+          <span id="rapImt" class="font-extrabold text-blue-900 text-sm">-</span>
+        </div>
+      </div>
+
+      <!-- Detail Refleksi & CRT Quest -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+        <div class="border p-4 rounded-lg space-y-2 bg-slate-50/50">
+          <h4 class="font-bold text-blue-900 uppercase border-b pb-1">🌏 Analisis Kebiasaan Budaya (CRT)</h4>
+          <p><strong>Pola Makan Lokal:</strong> <span id="rapCrt1">-</span></p>
+          <p><strong>Aktivitas Fisik Lokal:</strong> <span id="rapCrt2">-</span></p>
+          <p><strong>Konsumsi Minuman:</strong> <span id="rapCrt3">-</span></p>
+        </div>
+
+        <div class="border p-4 rounded-lg space-y-2 bg-slate-50/50">
+          <h4 class="font-bold text-purple-900 uppercase border-b pb-1">📝 Hasil Refleksi Diri</h4>
+          <p><strong>Perasaan Terhadap IMT:</strong> <span id="rapRef1">-</span></p>
+          <p><strong>Faktor Utama IMT:</strong> <span id="rapRef2">-</span></p>
+          <p><strong>Kesadaran Dampak:</strong> <span id="rapRef3">-</span></p>
+        </div>
+      </div>
+
+      <!-- Target Kebiasaan Mingguan -->
+      <div class="border p-4 rounded-lg text-xs bg-emerald-50/40 border-emerald-200">
+        <h4 class="font-bold text-emerald-900 uppercase mb-1">🎯 Target Komitmen Kebiasaan Sehat Mingguan</h4>
+        <ul id="rapTargetList" class="list-disc list-inside space-y-1 text-slate-700">
+          <li>Belum ada target terpilih</li>
+        </ul>
+      </div>
+
+      <!-- HASIL REMINDER / PENGINGAT KOMITMEN -->
+      <div class="border p-4 rounded-lg text-xs bg-amber-50/50 border-amber-200 space-y-1.5">
+        <h4 class="font-bold text-amber-900 uppercase flex items-center gap-1.5">
+          <span>⏰</span> Hasil Reminder & Pengingat Rutin Harian
+        </h4>
+        <p id="rapReminderTeks" class="text-slate-700 italic">
+          Pilihan target di atas menjadi komitmen pengingat harian yang harus dievaluasi secara mandiri selama 7 hari ke depan. Pastikan untuk memprioritaskan konsistensi aktivitas fisik dan nutrisi seimbang!
+        </p>
+      </div>
+
+      <!-- CATATAN / FEEDBACK GURU & ORANG TUA -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+        <div class="border p-3.5 rounded-lg bg-slate-50 space-y-2">
+          <label class="font-bold text-slate-800 uppercase block border-b pb-1">💬 Catatan & Umpan Balik Guru PJOK</label>
+          <textarea id="catatanGuruInput" rows="3" placeholder="Tuliskan apresiasi, saran, atau arahan tindak lanjut untuk siswa di sini..." class="w-full p-2 border border-slate-300 rounded text-xs bg-white focus:outline-none focus:ring-1 focus:ring-blue-600 no-print" oninput="updateCatatanCetak()"></textarea>
+          <div id="catatanGuruCetak" class="hidden text-slate-700 italic border-l-2 border-blue-800 pl-2">
+            Belum ada catatan khusus dari guru.
+          </div>
+        </div>
+
+        <div class="border p-3.5 rounded-lg bg-slate-50 space-y-2">
+          <label class="font-bold text-slate-800 uppercase block border-b pb-1">👨‍👩‍👧 Catatan & Pendampingan Orang Tua</label>
+          <textarea id="catatanOrtuInput" rows="3" placeholder="Tuliskan komitmen dukungan keluarga di rumah..." class="w-full p-2 border border-slate-300 rounded text-xs bg-white focus:outline-none focus:ring-1 focus:ring-blue-600 no-print" oninput="updateCatatanCetak()"></textarea>
+          <div id="catatanOrtuCetak" class="hidden text-slate-700 italic border-l-2 border-emerald-700 pl-2">
+            Belum ada catatan khusus dari orang tua.
+          </div>
+        </div>
+      </div>
+
+      <!-- Tanda Tangan Guru & Orang Tua -->
+      <div class="pt-6 border-t border-slate-200 flex justify-between items-end text-xs">
+        <div>
+          <p class="text-slate-500">Mengetahui, Orang Tua / Wali</p>
+          <div class="h-14"></div>
+          <p class="font-bold text-slate-800">( ............................................ )</p>
+        </div>
+
+        <div class="text-center">
+          <p id="kotaTglRapor" class="text-slate-600">Surabaya, 8 Oktober 2026</p>
+          <p class="font-semibold text-slate-700">Guru PJOK</p>
+          <div class="h-14"></div>
+          <p id="namaGuruRapor" class="font-bold text-slate-900 underline">Muhammad Rifaldo Bre S.Pd</p>
+          <p class="text-slate-500">NIP/NUPTK. <span id="nipGuruRapor">255970088</span></p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-900 text-slate-400 text-xs py-4 no-print border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-2">
+      <div>
+        <span>Pengembang: <strong class="text-white">Muhammad Rifaldo Bre S.Pd</strong> (Universitas Adi Buana Surabaya)</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="https://www.instagram.com/guruborongan/" target="_blank" class="hover:text-amber-400">Instagram</a>
+        <a href="https://www.tiktok.com/@guruborongan" target="_blank" class="hover:text-cyan-400">TikTok</a>
+        <a href="https://www.youtube.com/@guruborongan" target="_blank" class="hover:text-red-400">YouTube</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPT LOGIKA -->
+  <script>
+    let dataSiswa = {
+      nama: "-", kelas: "-", jk: "L", tb: 0, bb: 0, imt: 0, katImt: "-",
+      crt1: "-", crt2: "-", crt3: "-",
+      ref1: "-", ref2: "-", ref3: "-",
+      targets: [],
+      skorXp: 0
+    };
+
+    function tampilkanToast(pesan, icon = "✅") {
+      const toast = document.getElementById("toastNotif");
+      document.getElementById("toastPesan").innerText = pesan;
+      document.getElementById("toastIcon").innerText = icon;
+      toast.classList.remove("translate-y-20", "opacity-0");
+      setTimeout(() => toast.classList.add("translate-y-20", "opacity-0"), 2500);
+    }
+
+    function bukaTahap(tahap) {
+      document.querySelectorAll(".tahap-konten").forEach(el => el.classList.add("hidden"));
+      document.getElementById(`sec-${tahap}`).classList.remove("hidden");
+
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.className = "tab-btn p-3 rounded-xl border text-left font-semibold text-xs transition flex items-center gap-2 bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100";
+      });
+
+      const btnAktif = document.getElementById(`tab-${tahap}`);
+      btnAktif.className = "tab-btn p-3 rounded-xl border text-left font-semibold text-xs transition flex items-center gap-2 bg-blue-900 text-white border-blue-900";
+    }
+
+    function hitungImtLengkap(e) {
+      e.preventDefault();
+      dataSiswa.nama = document.getElementById("namaSiswa").value;
+      dataSiswa.kelas = document.getElementById("kelasSiswa").value;
+      dataSiswa.jk = document.getElementById("jkSiswa").value;
+      dataSiswa.tb = parseFloat(document.getElementById("tbSiswa").value);
+      dataSiswa.bb = parseFloat(document.getElementById("bbSiswa").value);
+
+      const imt = +(dataSiswa.bb / Math.pow(dataSiswa.tb / 100, 2)).toFixed(1);
+      dataSiswa.imt = imt;
+
+      let kat = "Ideal";
+      let pemicu = "Kondisi fisikmu dalam kategori ideal. Pertahankan kesadaran literasi fisikmu!";
+      if (imt < 18.5) { kat = "Kurus"; pemicu = "Perlu peningkatan asupan nutrisi seimbang dan latihan beban bertahap."; }
+      else if (imt <= 25.0) { kat = "Ideal"; }
+      else if (imt <= 27.0) { kat = "Gemuk"; pemicu = "Kurangi makanan tinggi gula/lemak dan tingkatkan aktivitas fisik harian."; }
+      else { kat = "Obesitas"; pemicu = "Perlu evaluasi pola hidup menyeluruh dan konsultasi aktivitas fisik teratur."; }
+
+      dataSiswa.katImt = kat;
+      tambahSkor(25);
+
+      document.getElementById("hasilKalkulatorBox").innerHTML = `
+        <div class="flex justify-between items-center mb-2">
+          <span class="font-bold text-slate-800">Hasil Analisis IMT Siswa:</span>
+          <span class="bg-blue-900 text-white px-2.5 py-0.5 rounded font-bold text-xs">${imt} (${kat})</span>
+        </div>
+        <p class="text-slate-600 mb-1">${pemicu}</p>
+        <span class="text-[11px] text-blue-700 font-semibold">✔ Silakan klik Tab "2. CRT Quest (Budaya)" di atas untuk melanjutkan alur pembelajaran.</span>
+      `;
+
+      updateTampilanRapor();
+      tampilkanToast("IMT berhasil dihitung (+25 XP)!");
+    }
+
+    function simpanCrtQuest() {
+      const crt1Sel = document.querySelector('input[name="crt1_opt"]:checked');
+      const crt2Sel = document.querySelector('input[name="crt2_opt"]:checked');
+      const crt3Sel = document.querySelector('input[name="crt3_opt"]:checked');
+
+      dataSiswa.crt1 = crt1Sel ? crt1Sel.value : "Belum dipilih";
+      dataSiswa.crt2 = crt2Sel ? crt2Sel.value : "Belum dipilih";
+      dataSiswa.crt3 = crt3Sel ? crt3Sel.value : "Belum dipilih";
+
+      tambahSkor(30);
+      document.getElementById("statCrtProgress").innerText = "3 / 3 Selesai";
+      updateTampilanRapor();
+      tampilkanToast("Quest CRT Budaya disimpan (+30 XP)!");
+      bukaTahap("merefleksi");
+    }
+
+    function simpanRefleksi() {
+      const ref1Sel = document.querySelector('input[name="ref1_opt"]:checked');
+      const ref2Sel = document.querySelector('input[name="ref2_opt"]:checked');
+      const ref3Sel = document.querySelector('input[name="ref3_opt"]:checked');
+
+      dataSiswa.ref1 = ref1Sel ? ref1Sel.value : "Belum dipilih";
+      dataSiswa.ref2 = ref2Sel ? ref2Sel.value : "Belum dipilih";
+      dataSiswa.ref3 = ref3Sel ? ref3Sel.value : "Belum dipilih";
+
+      tambahSkor(25);
+      document.getElementById("statLevelRefleksi").innerText = "Reflektif";
+      updateTampilanRapor();
+      tampilkanToast("Hasil Refleksi Diri disimpan (+25 XP)!");
+      bukaTahap("menerapkan");
+    }
+
+    function simpanTargetSehat() {
+      const listTgt = [];
+      if (document.getElementById("tgt1").checked) listTgt.push("Minum air putih minimal 2 Liter sehari");
+      if (document.getElementById("tgt2").checked) listTgt.push("Jalan kaki / olahraga 30 menit sehari");
+      if (document.getElementById("tgt3").checked) listTgt.push("Tambah 1 porsi sayur tiap makan");
+      if (document.getElementById("tgt4").checked) listTgt.push("Tidur teratur 7-8 jam per malam");
+      if (document.getElementById("tgt5").checked) listTgt.push("Maksimal 1x seminggu minuman manis");
+
+      dataSiswa.targets = listTgt;
+      tambahSkor(20);
+      document.getElementById("statTargetAktif").innerText = `${listTgt.length} Kebiasaan`;
+      updateTampilanRapor();
+      tampilkanToast("Target Kebiasaan Sehat berhasil dikunci (+20 XP)!");
+
+      document.getElementById("areaCetakRapor").scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function updateCatatanCetak() {
+      const valGuru = document.getElementById("catatanGuruInput").value;
+      const valOrtu = document.getElementById("catatanOrtuInput").value;
+
+      document.getElementById("catatanGuruCetak").innerText = valGuru.trim() !== "" ? valGuru : "Belum ada catatan khusus dari guru.";
+      document.getElementById("catatanOrtuCetak").innerText = valOrtu.trim() !== "" ? valOrtu : "Belum ada catatan khusus dari orang tua.";
+    }
+
+    function tambahSkor(xp) {
+      dataSiswa.skorXp = Math.min(100, dataSiswa.skorXp + xp);
+      document.getElementById("skorQuestTotal").innerText = `${dataSiswa.skorXp} / 100 XP`;
+    }
+
+    function updateTampilanRapor() {
+      document.getElementById("statImtTeks").innerText = dataSiswa.imt > 0 ? `${dataSiswa.imt} (${dataSiswa.katImt})` : "Belum dihitung";
+      document.getElementById("rapNama").innerText = dataSiswa.nama;
+      document.getElementById("rapKelasJk").innerText = `${dataSiswa.kelas} (${dataSiswa.jk === 'L' ? 'Laki-laki' : 'Perempuan'})`;
+      document.getElementById("rapTbBb").innerText = `${dataSiswa.tb} cm / ${dataSiswa.bb} kg`;
+      document.getElementById("rapImt").innerText = `${dataSiswa.imt} (${dataSiswa.katImt})`;
+
+      document.getElementById("rapCrt1").innerText = dataSiswa.crt1;
+      document.getElementById("rapCrt2").innerText = dataSiswa.crt2;
+      document.getElementById("rapCrt3").innerText = dataSiswa.crt3;
+
+      document.getElementById("rapRef1").innerText = dataSiswa.ref1;
+      document.getElementById("rapRef2").innerText = dataSiswa.ref2;
+      document.getElementById("rapRef3").innerText = dataSiswa.ref3;
+
+      const targetUl = document.getElementById("rapTargetList");
+      targetUl.innerHTML = "";
+      if (dataSiswa.targets.length > 0) {
+        dataSiswa.targets.forEach(t => {
+          const li = document.createElement("li");
+          li.innerText = t;
+          targetUl.appendChild(li);
+        });
+
+        document.getElementById("rapReminderTeks").innerText = 
+          `Pengingat Rutin Harian: Siswa bertekad menjalankan ${dataSiswa.targets.length} target kebiasaan sehat di atas secara konsisten. Lakukan pengawasan mandiri setiap pagi/malam untuk menjaga keberlanjutan pola hidup sehat!`;
+      } else {
+        targetUl.innerHTML = "<li>Belum ada target terpilih</li>";
+      }
+
+      const hariIni = new Date().toLocaleDateString("id-ID", { day: 'numeric', month: 'long', year: 'numeric' });
+      document.getElementById("raporTanggal").innerText = hariIni;
+      document.getElementById("kotaTglRapor").innerText = `Surabaya, ${hariIni}`;
+    }
+  </script>
+</body>
+</html>
